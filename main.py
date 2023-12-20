@@ -1,5 +1,6 @@
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from threading import Thread
+from datetime import datetime
 import urllib.parse
 import mimetypes
 import pathlib
@@ -62,10 +63,13 @@ def run_server(server=HTTPServer, handler=HTTPHandler):
 
 def save_data(data):
     data_parse = urllib.parse.unquote_plus(data.decode())
+    new_dct = {}
+    time = str(datetime.now())
     try:
         data_dict = {key: value for key, value in [el.split('=') for el in data_parse.split('&')]}
+        new_dct[time] = data_dict
         with open(BASE_DIR.joinpath('storage/data.json'), 'w', encoding='utf-8') as file:
-            json.dump(data_dict, file, ensure_ascii=False)
+            json.dump(new_dct, file, ensure_ascii=False)
     except ValueError:
         print("Error, not correct message. Please don't use '= and &'")
 
